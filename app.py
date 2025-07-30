@@ -112,11 +112,11 @@ _, col_tab = st.columns([2, 20])
 st.markdown('<br>', unsafe_allow_html=True)
 model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
 if model_radio == 'Logistic Regression':
-    with open(r'..\models\adult-income_LogisticRegression.pkl', 'rb') as f:
+
+    with open(r'lr_model.pkl', 'rb') as f:
         model =   pickle.load(f)
 else:
-    model =  models.load_model(r'..\models\adult-income_MultiLayerPreprocessing.h5')
-
+    model =  models.load_model(r'mlp-model.h5')
 
 
 
