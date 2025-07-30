@@ -164,11 +164,11 @@ with st.expander('**Predict Data**', True):
         if model_radio ==  'Logistic Regression':
             predicted_class = model.predict(row)
             predicted_class_prob = round(float(model.predict_proba(row)[0][predicted_class]), 5) * 100
-            predict_col.metric('Predicted Clasxs', predicted_class, delta=predicted_class_prob)
+            predict_col.metric('Predicted Clasxs', income_keys[predicted_class], delta=predicted_class_prob)
         else:
             predicted_class_prob = round(float(model.predict(row)[0][0]), 5)
             predicted_class = int(predicted_class_prob > 0.5)
-            predict_col.metric('Predicted Class', predicted_class, delta=round(float(predicted_class_prob), 5)*100 if predicted_class_prob > 0.5 else 100 - round(float(predicted_class_prob), 5)*100)
+            predict_col.metric('Predicted Class', income_keys[predicted_class], delta=round(float(predicted_class_prob), 5)*100 if predicted_class_prob > 0.5 else 100 - round(float(predicted_class_prob), 5)*100)
 
 
         actual_col.metric('Actual class',expand_data.iloc[index, -1])
@@ -253,7 +253,7 @@ with st.expander('**Predict Data**', True):
                 predicted_class = int(model.predict(row_expand))
                 predicted_class_prob = round(float(model.predict_proba(row_expand)[0][predicted_class]), 5)*100
                 predicted_value = income_keys[predicted_class]
-                st.metric('Predicted Class', predicted_value, delta=predicted_class_prob)
+                st.metric('Predicted Class', income_keys[predicted_value], delta=predicted_class_prob)
                 
             else:
                 predicted_class_prob = round(float(model.predict(row_expand)[0][0]), 5)
