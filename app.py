@@ -120,7 +120,7 @@ else:
 
 
 
-df = pd.read_csv(r'M:\Programming\Poulstar\Python Term 14\Projects\adult-income\adult_income(Classification_MLP_LogisticRegression)hard.csv')
+df = pd.read_csv(r'adult-income.csv')
 DataPreprocessor = Preparation()
 df = DataPreprocessor.remove_nan_row(df)
 df_copy = df.copy(True)
