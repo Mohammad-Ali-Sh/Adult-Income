@@ -19,6 +19,20 @@ st.set_page_config(
 
 
 
+st.title('Welcome to Incoming Prediction App')
+
+_, col_tab = st.columns([2, 20])
+st.markdown('<br>', unsafe_allow_html=True)
+model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
+if model_radio == 'Logistic Regression':
+
+    with open(r'lr_model.pkl', 'rb') as f:
+        model =   pickle.load(f)
+else:
+    model =  models.load_model(r'mlp-model.h5')
+
+
+
 
 class Preparation:
     def remove_nan_row(self, df:pd.DataFrame):
@@ -105,18 +119,6 @@ class Preparation:
 
 
 
-
-st.title('Welcome to Incoming Prediction App')
-
-_, col_tab = st.columns([2, 20])
-st.markdown('<br>', unsafe_allow_html=True)
-model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
-if model_radio == 'Logistic Regression':
-
-    with open(r'lr_model.pkl', 'rb') as f:
-        model =   pickle.load(f)
-else:
-    model =  models.load_model(r'mlp-model.h5')
 
 
 
