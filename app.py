@@ -23,7 +23,7 @@ st.title('Welcome to Incoming Prediction App')
 
 _, col_tab = st.columns([2, 20])
 st.markdown('<br>', unsafe_allow_html=True)
-model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=1, key='Special_radio')
+model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
 if model_radio == 'Logistic Regression':
 
     with open(r'lr_model.pkl', 'rb') as f:
@@ -164,7 +164,7 @@ with st.expander('**Predict Data**', True):
 
         predict_col, actual_col = st.columns(2)
         if model_radio == 'Logistic Regression':
-            predict_value = int(model.predict(row))
+            predict_value = np.int64(model.predict(row)[0])
             predict_class = income_keys[predict_value]
             predict_prob = list(model.predict_proba(row))[0][predict_value]
             predict_prob = round(float(predict_prob), 5) * 100
