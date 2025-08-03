@@ -23,7 +23,7 @@ st.title('Welcome to Incoming Prediction App')
 
 _, col_tab = st.columns([2, 20])
 st.markdown('<br>', unsafe_allow_html=True)
-model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
+model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=1, key='Special_radio')
 if model_radio == 'Logistic Regression':
 
     with open(r'lr_model.pkl', 'rb') as f:
@@ -158,20 +158,32 @@ with st.expander('**Predict Data**', True):
     if predict_radio == 'Use a specific row of dataframe':
         index = st.number_input('which row to you want to use?', 0, expand_data.shape[0], value=0)
         st.markdown('<br>', unsafe_allow_html=True)
+        row_shown = df.iloc[index:index+1, :-1]
         row = expand_data.iloc[index:index+1, :-1]
-        st.dataframe(row)
+        st.dataframe(row_shown)
+
         predict_col, actual_col = st.columns(2)
-        if model_radio ==  'Logistic Regression':
-            predicted_class = model.predict(row)
-            predicted_class_prob = round(float(model.predict_proba(row)[0][predicted_class]), 5) * 100
-            predict_col.metric('Predicted Clasxs', income_keys[predicted_class], delta=predicted_class_prob)
+        if model_radio == 'Logistic Regression':
+            predict_value = int(model.predict(row))
+            predict_class = income_keys[predict_value]
+            predict_prob = list(model.predict_proba(row))[0][predict_value]
+            predict_prob = round(float(predict_prob), 5) * 100
+            predict_col.metric('Predicted Class', predict_class, delta=predict_prob)
+        
         else:
-            predicted_class_prob = round(float(model.predict(row)[0][0]), 5)
-            predicted_class = int(predicted_class_prob > 0.5)
-            predict_col.metric('Predicted Class', income_keys[predicted_class], delta=round(float(predicted_class_prob), 5)*100 if predicted_class_prob > 0.5 else 100 - round(float(predicted_class_prob), 5)*100)
+            predict_prob = round(float(model.predict(row)[0]), 6) * 100
+            predict_value = int(predict_prob > 50)
+            predict_class = income_keys[predict_value]
+            if predict_prob < 50:
+                predict_prob = 100 - predict_prob 
+            predict_col.metric('Predicted Class', predict_class, delta=predict_prob)
 
 
-        actual_col.metric('Actual class',expand_data.iloc[index, -1])
+        actual_value = int(expand_data.iloc[index:index+1, -1])
+        actual_class = income_keys[actual_value]
+        actual_col.metric('Actual Class', actual_class)
+    
+
 
 
     elif predict_radio == 'Define a row':
@@ -247,19 +259,22 @@ with st.expander('**Predict Data**', True):
 
         submit = form.form_submit_button()
 
-
-        if True:
+        if submit:
+            st.dataframe(row_expand)
             if model_radio == 'Logistic Regression':
-                predicted_class = int(model.predict(row_expand))
-                predicted_class_prob = round(float(model.predict_proba(row_expand)[0][predicted_class]), 5)*100
-                predicted_value = income_keys[predicted_class]
-                st.metric('Predicted Class', income_keys[predicted_value], delta=predicted_class_prob)
-                
+                predict_value = int(model.predict(row_expand))
+                predict_class = income_keys[predict_value]
+                predict_prob = list(model.predict_proba(row_expand))[0][predict_value]
+                predict_prob = round(float(predict_prob), 5) * 100
+                st.metric('Predicted Class', predict_class, delta=predict_prob)
+
             else:
-                predicted_class_prob = round(float(model.predict(row_expand)[0][0]), 5)
-                predicted_class = int(predicted_class_prob > 0.5)
-                predicted_value = income_keys[predicted_class]
-                st.metric('Predicted Class', predicted_value, delta=predicted_class_prob if predicted_class_prob > 0.5 else 1 - predicted_class_prob)
+                predict_prob = round(float(model.predict(row_expand)[0]), 6) * 100
+                predict_value = int(predict_prob > 50)
+                predict_class = income_keys[predict_value]
+                if predict_prob < 50:
+                    predict_prob = 100 - predict_prob 
+                st.metric('Predicted Class', predict_class, delta=predict_prob)
 
 
 with st.expander('*Model Evaluations*', False):
