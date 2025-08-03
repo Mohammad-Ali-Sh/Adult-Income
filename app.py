@@ -28,7 +28,7 @@ model_radio = col_tab.radio(
     ['🔹 Logistic Regression', '🔸 MLP (Neural Network)'],
     index=0
 )
-if model_radio == 'Logistic Regression':
+if model_radio == '🔹 Logistic Regression':
 
     with open(r'lr_model.pkl', 'rb') as f:
         model =   pickle.load(f)
@@ -171,7 +171,7 @@ with tabs[1]:
         st.dataframe(row_shown)
 
         predict_col, actual_col = st.columns(2)
-        if model_radio == 'Logistic Regression':
+        if model_radio == '🔹 Logistic Regression':
             predict_value = np.int64(model.predict(row)[0])
             predict_class = income_keys[predict_value]
             predict_prob = list(model.predict_proba(row))[0][predict_value]
@@ -269,7 +269,7 @@ with tabs[1]:
 
         if submit:
             st.dataframe(row_expand)
-            if model_radio == 'Logistic Regression':
+            if model_radio == '🔹 Logistic Regression':
                 predict_value = int(model.predict(row_expand))
                 predict_class = income_keys[predict_value]
                 predict_prob = list(model.predict_proba(row_expand))[0][predict_value]
@@ -294,13 +294,11 @@ with tabs[2]:
         return predicted_classes, actual_classes
     
     def calc_predict_lr():    
-        predicted_classes_prob = model.predict(expand_data.iloc[:, :-1])
-        predicted_classes = predicted_classes_prob > 0.5
-        predicted_classes = predicted_classes.reshape(predicted_classes.shape[0])
+        predict_classes = model.predict(expand_data.iloc[:, :-1])
         actual_classes = expand_data.iloc[:, -1]
-        return predicted_classes, actual_classes
+        return predict_classes, actual_classes
     
-    if model_radio == 'Logistic Regression':
+    if model_radio == '🔹 Logistic Regression':
         predicted_classes, actual_classes = calc_predict_lr()
     else:
         predicted_classes, actual_classes = calc_predict_mlp()
