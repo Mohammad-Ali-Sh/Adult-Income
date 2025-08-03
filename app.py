@@ -21,9 +21,13 @@ st.set_page_config(
 
 st.title('Welcome to Incoming Prediction App')
 
-_, col_tab = st.columns([2, 20])
+_, col_tab = st.columns([2, 30])
 st.markdown('<br>', unsafe_allow_html=True)
-model_radio = col_tab.radio('*Models*:', ['Logistic Regression', 'Multi Layer Preprocessing (MLP)'], index=0, key='Special_radio')
+model_radio = col_tab.radio(
+    '🧠 Choose Model:',
+    ['🔹 Logistic Regression', '🔸 MLP (Neural Network)'],
+    index=0
+)
 if model_radio == 'Logistic Regression':
 
     with open(r'lr_model.pkl', 'rb') as f:
@@ -139,7 +143,9 @@ expand_data = DataPreprocessor.reorder_columns(expand_data, list(expand_data.col
 data = DataPreprocessor.reorder_columns(data, list(data.columns))
 
 
-with st.expander('View DataFrame', False):
+tabs = st.tabs(['📊 Dataset Preview', '🧠 Predict', '📈 Evaluate Model'])
+
+with tabs[0]:
     rows = st.number_input('How many rows do you want to see?', 1, df.shape[0]+1, value=8)
     from_head = st.checkbox('Show from Top', True)
     st.dataframe(df.head(rows) if from_head else df.tail(rows))
@@ -148,7 +154,9 @@ with st.expander('View DataFrame', False):
     st.dataframe(expand_data.head(rows) if from_head else expand_data.tail(rows))
 
 
-with st.expander('**Predict Data**', True):
+
+
+with tabs[1]:
     predict_radio = st.radio('Which method do you want to predict the data:', [
         'Use a specific row of dataframe',
         'Define a row'
@@ -277,7 +285,7 @@ with st.expander('**Predict Data**', True):
                 st.metric('Predicted Class', predict_class, delta=predict_prob)
 
 
-with st.expander('*Model Evaluations*', False):
+with tabs[2]:
     def calc_predict_mlp():    
         predicted_classes_prob = model.predict(expand_data.iloc[:, :-1])
         predicted_classes = predicted_classes_prob > 0.5
@@ -308,3 +316,7 @@ with st.expander('*Model Evaluations*', False):
     conf_col.write('Confusion matrix')
     conf_matrix = pd.DataFrame(conf_matrix, columns=['predict +', ' predict -'], index=['actual +', 'actual-'])
     conf_col.table(conf_matrix)
+
+
+st.markdown("<hr>", unsafe_allow_html=True)
+st.subheader("Made with ❤️ using Streamlit")
